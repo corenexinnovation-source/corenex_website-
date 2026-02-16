@@ -35,7 +35,12 @@ export default function PortfolioPage() {
         try {
             const response = await fetch('/api/projects');
             const data = await response.json();
-            setProjects(data);
+            if (Array.isArray(data)) {
+                setProjects(data);
+            } else {
+                console.error('Projects data is not an array:', data);
+                setProjects([]);
+            }
         } catch (error) {
             console.error('Error fetching projects:', error);
         } finally {

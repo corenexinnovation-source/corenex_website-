@@ -127,16 +127,16 @@ export default function HomePage() {
                 ))}
               </ul>
             </AnimationWrapper>
-            <AnimationWrapper animation="slideLeft" className="relative h-96 rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center">
-              <div className={`relative h-64 lg:h-96 rounded-xl overflow-hidden shadow-xl`}>
-                <Image
-                    src="/images/why-us.jpg"
-                    alt="Why Choose Us"
-                    fill
-                    className="object-cover transition-transform duration-500 hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              </div>
+            <AnimationWrapper animation="slideLeft" className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+              <Image
+                src="/images/why-us.jpg"
+                alt="Why Choose CORENEX"
+                fill
+                className="object-cover transition-transform duration-700 hover:scale-110"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </AnimationWrapper>
           </div>
         </div>

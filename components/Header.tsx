@@ -3,14 +3,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 export default function Header() {
     const pathname = usePathname();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const { theme, setTheme } = useTheme();
+
+    // Avoid hydration mismatch by waiting for mount
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const navigation = [
         { name: 'Home', href: '/' },
@@ -46,8 +52,8 @@ export default function Header() {
                                 key={item.name}
                                 href={item.href}
                                 className={`text-md font-medium transition-colors hover:text-primary-600 dark:hover:text-primary-400 ${isActive(item.href)
-                                        ? 'text-primary-600 dark:text-primary-400'
-                                        : 'text-gray-700 dark:text-gray-300'
+                                    ? 'text-primary-600 dark:text-primary-400'
+                                    : 'text-gray-700 dark:text-gray-300'
                                     }`}
                             >
                                 {item.name}
@@ -60,11 +66,12 @@ export default function Header() {
                             className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                             aria-label="Toggle theme"
                         >
-                            {theme === 'dark' ? (
+                            {mounted && (theme === 'dark' ? (
                                 <Sun className="w-5 h-5 text-yellow-500" />
                             ) : (
                                 <Moon className="w-5 h-5 text-gray-700" />
-                            )}
+                            ))}
+                            {!mounted && <div className="w-5 h-5" />}
                         </button>
                     </div>
 
@@ -75,11 +82,12 @@ export default function Header() {
                             className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800"
                             aria-label="Toggle theme"
                         >
-                            {theme === 'dark' ? (
+                            {mounted && (theme === 'dark' ? (
                                 <Sun className="w-5 h-5 text-yellow-500" />
                             ) : (
                                 <Moon className="w-5 h-5 text-gray-700" />
-                            )}
+                            ))}
+                            {!mounted && <div className="w-5 h-5" />}
                         </button>
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -104,8 +112,8 @@ export default function Header() {
                                     href={item.href}
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={`text-sm font-medium transition-colors ${isActive(item.href)
-                                            ? 'text-primary-600 dark:text-primary-400'
-                                            : 'text-gray-700 dark:text-gray-300'
+                                        ? 'text-primary-600 dark:text-primary-400'
+                                        : 'text-gray-700 dark:text-gray-300'
                                         }`}
                                 >
                                     {item.name}

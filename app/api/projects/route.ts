@@ -3,6 +3,8 @@ import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 import { projectSchema } from '@/lib/validation';
 
+export const dynamic = 'force-dynamic';
+
 // GET all projects (public)
 export async function GET(request: NextRequest) {
     try {

@@ -3,6 +3,8 @@ import { prisma } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 import { serviceSchema } from '@/lib/validation';
 
+export const dynamic = 'force-dynamic';
+
 // GET all services (public - only active ones)
 export async function GET() {
     try {
