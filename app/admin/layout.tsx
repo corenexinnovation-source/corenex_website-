@@ -33,6 +33,7 @@ export default function AdminLayout({
         { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
         { name: 'Projects', href: '/admin/projects', icon: FolderKanban },
         { name: 'Services', href: '/admin/services', icon: Briefcase },
+        { name: 'Messages', href: '/admin/messages', icon: Mail },
     ];
 
     return (

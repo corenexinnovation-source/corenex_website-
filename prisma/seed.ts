@@ -82,12 +82,16 @@ async function main() {
         },
     ];
 
-    for (const service of services) {
-        await prisma.service.upsert({
-            where: { id: service.title.toLowerCase().replace(/\s+/g, '-') },
-            update: {},
-            create: service,
+    for (const serviceData of services) {
+        const existingService = await prisma.service.findFirst({
+            where: { title: serviceData.title },
         });
+
+        if (!existingService) {
+            await prisma.service.create({
+                data: serviceData,
+            });
+        }
     }
 
     console.log('✅ Created default services');
@@ -124,10 +128,16 @@ async function main() {
         },
     ];
 
-    for (const project of projects) {
-        await prisma.project.create({
-            data: project,
+    for (const projectData of projects) {
+        const existingProject = await prisma.project.findFirst({
+            where: { title: projectData.title },
         });
+
+        if (!existingProject) {
+            await prisma.project.create({
+                data: projectData,
+            });
+        }
     }
 
     console.log('✅ Created sample projects');

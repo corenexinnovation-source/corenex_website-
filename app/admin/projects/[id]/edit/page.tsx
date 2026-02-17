@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, X, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Save, X, Plus, Trash2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
-export default function NewProjectPage() {
+export default function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -21,6 +23,36 @@ export default function NewProjectPage() {
 
     const [newTech, setNewTech] = useState('');
     const [newImage, setNewImage] = useState('');
+
+    useEffect(() => {
+        fetchProject();
+    }, [id]);
+
+    const fetchProject = async () => {
+        try {
+            const response = await fetch(`/api/projects/${id}`);
+            if (response.ok) {
+                const data = await response.json();
+                setFormData({
+                    title: data.title,
+                    description: data.description,
+                    category: data.category || 'Web Development',
+                    technologies: data.technologies || [],
+                    images: data.images || [],
+                    clientName: data.clientName || '',
+                    projectLink: data.projectLink || '',
+                    featured: data.featured || false,
+                });
+            } else {
+                alert('Failed to fetch project details');
+                router.push('/admin/projects');
+            }
+        } catch (error) {
+            console.error('Error fetching project:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const addTech = () => {
         if (newTech && !formData.technologies.includes(newTech)) {
@@ -46,11 +78,11 @@ export default function NewProjectPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
+        setSaving(true);
 
         try {
-            const response = await fetch('/api/projects', {
-                method: 'POST',
+            const response = await fetch(`/api/projects/${id}`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
@@ -60,15 +92,23 @@ export default function NewProjectPage() {
                 router.refresh();
             } else {
                 const error = await response.json();
-                alert(error.error || 'Failed to create project');
+                alert(error.error || 'Failed to update project');
             }
         } catch (error) {
-            console.error('Error creating project:', error);
+            console.error('Error updating project:', error);
             alert('An unexpected error occurred');
         } finally {
-            setLoading(false);
+            setSaving(false);
         }
     };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-12 h-12 animate-spin text-primary-600" />
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-4xl mx-auto">
@@ -81,12 +121,13 @@ export default function NewProjectPage() {
                         <ArrowLeft className="w-4 h-4 mr-1" />
                         Back to Projects
                     </Link>
-                    <h1 className="text-3xl font-bold">Add New Project</h1>
+                    <h1 className="text-3xl font-bold">Edit Project</h1>
                 </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 space-y-6">
+                    {/* Same form grid as NewProjectPage */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Project Title</label>
@@ -96,7 +137,6 @@ export default function NewProjectPage() {
                                 value={formData.title}
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 focus:border-primary-500 focus:outline-none transition-all"
-                                placeholder="E.g. Modern E-commerce Platform"
                             />
                         </div>
                         <div className="space-y-2">
@@ -123,29 +163,26 @@ export default function NewProjectPage() {
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 focus:border-primary-500 focus:outline-none transition-all"
-                            placeholder="Detailed description of the project (min 20 characters)..."
                         />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Client Name (Optional)</label>
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Client Name</label>
                             <input
                                 type="text"
                                 value={formData.clientName}
                                 onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
                                 className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 focus:border-primary-500 focus:outline-none transition-all"
-                                placeholder="E.g. Tech Solutions Inc."
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Project Link (Optional)</label>
+                            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Project Link</label>
                             <input
                                 type="url"
                                 value={formData.projectLink}
                                 onChange={(e) => setFormData({ ...formData, projectLink: e.target.value })}
                                 className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 focus:border-primary-500 focus:outline-none transition-all"
-                                placeholder="https://example.com"
                             />
                         </div>
                     </div>
@@ -159,7 +196,7 @@ export default function NewProjectPage() {
                                 onChange={(e) => setNewTech(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTech())}
                                 className="flex-1 px-4 py-2 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 focus:border-primary-500 focus:outline-none transition-all"
-                                placeholder="Add technology (e.g. Next.js)..."
+                                placeholder="Add technology..."
                             />
                             <button
                                 type="button"
@@ -182,7 +219,7 @@ export default function NewProjectPage() {
                     </div>
 
                     <div className="space-y-4">
-                        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Project Images (URLs)</label>
+                        <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Project Images</label>
                         <div className="flex gap-2">
                             <input
                                 type="url"
@@ -233,13 +270,13 @@ export default function NewProjectPage() {
                 <div className="flex gap-4">
                     <button
                         type="submit"
-                        disabled={loading}
+                        disabled={saving}
                         className="flex-1 inline-flex items-center justify-center px-8 py-4 bg-primary-600 text-white rounded-2xl font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-500/25 disabled:opacity-50"
                     >
-                        {loading ? 'Saving...' : (
+                        {saving ? 'Saving...' : (
                             <>
                                 <Save className="w-5 h-5 mr-2" />
-                                Save Project
+                                Update Project
                             </>
                         )}
                     </button>

@@ -36,7 +36,12 @@ export default function ContactPage() {
                 setSuccess(true);
                 setFormData({ name: '', email: '', subject: '', message: '' });
             } else {
-                setError(data.error || 'Failed to send message');
+                if (data.details && Array.isArray(data.details)) {
+                    const messages = data.details.map((d: any) => `${d.path.join('.')}: ${d.message}`).join(', ');
+                    setError(`Validation failed: ${messages}`);
+                } else {
+                    setError(data.error || data.message || 'Failed to send message');
+                }
             }
         } catch (err) {
             setError('An error occurred. Please try again.');

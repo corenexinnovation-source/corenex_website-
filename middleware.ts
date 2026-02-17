@@ -9,6 +9,24 @@ const JWT_SECRET = new TextEncoder().encode(
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
+    // Handle CORS preflight requests
+    if (pathname.startsWith('/api')) {
+        if (request.method === 'OPTIONS') {
+            const response = new NextResponse(null, { status: 204 });
+            const origin = request.headers.get('origin');
+            if (origin) {
+                response.headers.set('Access-Control-Allow-Origin', origin);
+            } else {
+                response.headers.set('Access-Control-Allow-Origin', '*');
+            }
+            response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+            response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+            response.headers.set('Access-Control-Allow-Credentials', 'true');
+            response.headers.set('Access-Control-Max-Age', '86400');
+            return response;
+        }
+    }
+
     // Protect admin routes (except login page)
     if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
         const token = request.cookies.get('auth-token');
@@ -19,7 +37,7 @@ export async function middleware(request: NextRequest) {
 
         try {
             await jwtVerify(token.value, JWT_SECRET);
-            return NextResponse.next();
+            // Allow normalized response below
         } catch (error) {
             return NextResponse.redirect(new URL('/admin/login', request.url));
         }
@@ -39,9 +57,24 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    return NextResponse.next();
+    const response = NextResponse.next();
+
+    // Add CORS headers to all API responses
+    if (pathname.startsWith('/api')) {
+        const origin = request.headers.get('origin');
+        if (origin) {
+            response.headers.set('Access-Control-Allow-Origin', origin);
+        } else {
+            response.headers.set('Access-Control-Allow-Origin', '*');
+        }
+        response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        response.headers.set('Access-Control-Allow-Credentials', 'true');
+    }
+
+    return response;
 }
 
 export const config = {
-    matcher: '/admin/:path*',
+    matcher: ['/admin/:path*', '/api/:path*'],
 };

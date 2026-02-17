@@ -1,12 +1,15 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import dbConnect from '@/lib/mongoose';
+import ContactMessage from '@/lib/models/ContactMessage';
 import { getCurrentUser } from '@/lib/auth';
 
-export const dynamic = 'force-dynamic';
-
 // GET all contact messages (admin only)
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
+        await dbConnect();
         const user = await getCurrentUser();
         if (!user) {
             return NextResponse.json(
@@ -15,9 +18,7 @@ export async function GET() {
             );
         }
 
-        const messages = await prisma.contactMessage.findMany({
-            orderBy: { createdAt: 'desc' },
-        });
+        const messages = await ContactMessage.find().sort({ createdAt: -1 });
 
         return NextResponse.json(messages);
     } catch (error) {
@@ -31,6 +32,7 @@ export async function GET() {
 // PUT mark message as read (admin only)
 export async function PUT(request: NextRequest) {
     try {
+        await dbConnect();
         const user = await getCurrentUser();
         if (!user) {
             return NextResponse.json(
@@ -40,16 +42,26 @@ export async function PUT(request: NextRequest) {
         }
 
         const { id, read } = await request.json();
+        console.log('Updating message:', id, { read });
 
-        const message = await prisma.contactMessage.update({
-            where: { id },
-            data: { read },
-        });
+        const message = await ContactMessage.findByIdAndUpdate(
+            id,
+            { read },
+            { new: true }
+        );
+
+        if (!message) {
+            return NextResponse.json(
+                { error: 'Message not found' },
+                { status: 404 }
+            );
+        }
 
         return NextResponse.json(message);
-    } catch (error) {
+    } catch (error: any) {
+        console.error('Update message error:', error);
         return NextResponse.json(
-            { error: 'Failed to update message' },
+            { error: 'Failed to update message', details: error.message },
             { status: 400 }
         );
     }
@@ -58,6 +70,7 @@ export async function PUT(request: NextRequest) {
 // DELETE message (admin only)
 export async function DELETE(request: NextRequest) {
     try {
+        await dbConnect();
         const user = await getCurrentUser();
         if (!user) {
             return NextResponse.json(
@@ -76,14 +89,21 @@ export async function DELETE(request: NextRequest) {
             );
         }
 
-        await prisma.contactMessage.delete({
-            where: { id },
-        });
+        console.log('Deleting message:', id);
+        const deletedMessage = await ContactMessage.findByIdAndDelete(id);
+
+        if (!deletedMessage) {
+            return NextResponse.json(
+                { error: 'Message not found' },
+                { status: 404 }
+            );
+        }
 
         return NextResponse.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
+        console.error('Delete message error:', error);
         return NextResponse.json(
-            { error: 'Failed to delete message' },
+            { error: 'Failed to delete message', details: error.message },
             { status: 400 }
         );
     }

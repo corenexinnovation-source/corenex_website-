@@ -7,94 +7,98 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-gray-50 dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    {/* Company Info */}
-                    <div className="col-span-1 md:col-span-2">
-                        <div className="relative w-40 h-40 -ml-4 mb-2">
-                            <Image
-                                src="/images/icon.png"
-                                alt="CORENEX INNOVATIONS"
-                                fill
-                                className="object-contain object-left"
-                                priority
-                            />
-                        </div>
-                        <p className="text-gray-600 dark:text-gray-400 mb-6">
-                            Professional IT solutions for modern businesses. We deliver excellence in web development, mobile apps, design, and IT consulting.
+        <footer className="bg-white dark:bg-gray-950 text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-16 py-16">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-24">
+                    {/* Brand & Socials */}
+                    <div className="space-y-6">
+                        <Link href="/" className="inline-block">
+                            <span className="text-2xl font-bold tracking-tight">
+                                <span className="text-gray-900 dark:text-white">CORENEX</span>{' '}
+                                <span className="text-primary-600 dark:text-primary-400">INNOVATIONS</span>
+                            </span>
+                        </Link>
+                        <p className="text-gray-600 dark:text-gray-400 leading-relaxed max-w-sm">
+                            Professional IT solutions for modern businesses. We deliver excellence in web development, mobile apps, design, and IT consulting to help your business grow.
                         </p>
-                        <div className="flex space-x-4">
-                            <a href="https://www.facebook.com/people/CoreNex-Innovation/61582778909243/#" target="_blank" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                                <Facebook className="w-7 h-7" />
+                        <div className="flex items-center space-x-5 pt-2">
+                            <a href="https://www.facebook.com/people/CoreNex-Innovation/61582778909243/#" target="_blank" className="p-2 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-white transition-all">
+                                <Facebook className="w-5 h-5" />
                             </a>
-                            <a href="https://www.linkedin.com/company/corenex-innovations/" target="_blank" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                                <Linkedin className="w-7 h-7" />
+                            <a href="https://www.linkedin.com/company/corenex-innovations/" target="_blank" className="p-2 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-white transition-all">
+                                <Linkedin className="w-5 h-5" />
                             </a>
-                            <a href="https://www.instagram.com/corenexinnovations?igsh=dnA0dXhpNjZ3NGZi" target="_blank" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                                <Instagram className="w-7 h-7" />
+                            <a href="https://www.instagram.com/corenexinnovations?igsh=dnA0dXhpNjZ3NGZi" target="_blank" className="p-2 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-white transition-all">
+                                <Instagram className="w-5 h-5" />
                             </a>
-                            <a href="https://www.tiktok.com/@corenex.innovatio?_r=1&_t=ZS-93u5q4pSF2A" target="_blank" className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                                <PiTiktokLogoLight className="w-7 h-7" />
+                            <a href="https://www.tiktok.com/@corenex.innovatio?_r=1&_t=ZS-93u5q4pSF2A" target="_blank" className="p-2 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-white transition-all">
+                                <PiTiktokLogoLight className="w-5 h-5" />
                             </a>
                         </div>
-                    </div>
-
-                    {/* Quick Links */}
-                    <div>
-                        <h4 className="font-semibold mb-4">Quick Links</h4>
-                        <ul className="space-y-2">
-                            <li>
-                                <Link href="/" className="group relative text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors w-fit block">
-                                    <span>Home</span>
-                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 dark:bg-primary-400 transition-all duration-300 group-hover:w-full"></span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/about" className="group relative text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors w-fit block">
-                                    <span>About Us</span>
-                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 dark:bg-primary-400 transition-all duration-300 group-hover:w-full"></span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/services" className="group relative text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors w-fit block">
-                                    <span>Services</span>
-                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 dark:bg-primary-400 transition-all duration-300 group-hover:w-full"></span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/portfolio" className="group relative text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors w-fit block">
-                                    <span>Portfolio</span>
-                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 dark:bg-primary-400 transition-all duration-300 group-hover:w-full"></span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/contact" className="group relative text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors w-fit block">
-                                    <span>Contact</span>
-                                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 dark:bg-primary-400 transition-all duration-300 group-hover:w-full"></span>
-                                </Link>
-                            </li>
-                        </ul>
                     </div>
 
                     {/* Contact Info */}
-                    <div>
-                        <h4 className="font-semibold mb-4">Contact Us</h4>
-                        <ul className="space-y-3">
-                            <Link href="mailto:[EMAIL_ADDRESS]" className="flex items-start space-x-2 text-gray-600 dark:text-gray-400">
-                                <Mail className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                                <span className="text-sm">corenexinnovation@gmail.com</span>
-                            </Link>
-                            <Link href="tel:+923127002606" className="flex items-start space-x-2 text-gray-600 dark:text-gray-400">
-                                <Phone className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                                <span className="text-sm">+92 (312) 7002606</span>
-                            </Link>
+                    <div className="space-y-8">
+                        <div className="flex items-center space-x-4">
+                            <div className="p-3 rounded-xl bg-primary-50 dark:bg-white/5 text-primary-600 dark:text-primary-400">
+                                <Phone className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <p className="text-lg font-medium text-gray-900 dark:text-white">+92 (312) 7002606</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Support Number</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center space-x-4">
+                            <div className="p-3 rounded-xl bg-primary-50 dark:bg-white/5 text-primary-600 dark:text-primary-400">
+                                <Mail className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <p className="text-lg font-medium text-gray-900 dark:text-white">corenexinnovation@gmail.com</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Support Email</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center space-x-4">
+                            <div className="p-3 rounded-xl bg-primary-50 dark:bg-white/5 text-primary-600 dark:text-primary-400">
+                                <MapPin className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <p className="text-lg font-medium text-gray-900 dark:text-white">Lahore, Pakistan</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Address</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Navigation */}
+                    <div className="md:pl-10">
+                        <h4 className="text-xl font-bold mb-8 text-gray-900 dark:text-white">Pages</h4>
+                        <ul className="grid grid-cols-1 gap-4">
+                            {[
+                                { name: 'Home', href: '/' },
+                                { name: 'About Us', href: '/about' },
+                                { name: 'Services', href: '/services' },
+                                { name: 'Portfolio', href: '/portfolio' },
+                                { name: 'Contact', href: '/contact' },
+                            ].map((link) => (
+                                <li key={link.name}>
+                                    <Link
+                                        href={link.href}
+                                        className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-white transition-colors duration-200 text-lg flex items-center group"
+                                    >
+                                        <span className="w-0 group-hover:w-2 h-0.5 bg-primary-600 dark:bg-primary-400 mr-0 group-hover:mr-2 transition-all duration-200"></span>
+                                        {link.name}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>
 
-                <div className="border-t border-gray-200 dark:border-gray-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-                    <p>&copy; {currentYear} CORENEX INNOVATIONS. All rights reserved.</p>
+                <div className="border-t border-gray-200 dark:border-white/10 mt-16 pt-8 text-center">
+                    <p className="text-gray-500 dark:text-gray-500 text-sm font-medium tracking-wide">
+                        &copy; {currentYear}, All Rights Reserved by CORENEX INNOVATIONS
+                    </p>
                 </div>
             </div>
         </footer>

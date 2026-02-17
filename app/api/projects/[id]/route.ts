@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import dbConnect from '@/lib/mongoose';
+import Project from '@/lib/models/Project';
 import { getCurrentUser } from '@/lib/auth';
 import { projectSchema } from '@/lib/validation';
 
@@ -11,10 +12,9 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        await dbConnect();
         const { id } = await params;
-        const project = await prisma.project.findUnique({
-            where: { id },
-        });
+        const project = await Project.findById(id);
 
         if (!project) {
             return NextResponse.json(
@@ -38,6 +38,7 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        await dbConnect();
         const user = await getCurrentUser();
         if (!user) {
             return NextResponse.json(
@@ -50,10 +51,11 @@ export async function PUT(
         const body = await request.json();
         const validatedData = projectSchema.parse(body);
 
-        const project = await prisma.project.update({
-            where: { id },
-            data: validatedData,
-        });
+        const project = await Project.findByIdAndUpdate(
+            id,
+            validatedData,
+            { new: true }
+        );
 
         return NextResponse.json(project);
     } catch (error) {
@@ -70,6 +72,7 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        await dbConnect();
         const user = await getCurrentUser();
         if (!user) {
             return NextResponse.json(
@@ -79,9 +82,7 @@ export async function DELETE(
         }
 
         const { id } = await params;
-        await prisma.project.delete({
-            where: { id },
-        });
+        await Project.findByIdAndDelete(id);
 
         return NextResponse.json({ success: true });
     } catch (error) {

@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { Plus, Edit, Trash2, ExternalLink } from 'lucide-react';
 
 interface Project {
-    id: string;
+    _id: string;
     title: string;
     description: string;
     category: string;
     featured: boolean;
     technologies: string[];
+    images: string[];
     createdAt: string;
 }
 
@@ -43,7 +44,7 @@ export default function AdminProjectsPage() {
             });
 
             if (response.ok) {
-                setProjects(projects.filter(p => p.id !== id));
+                setProjects(projects.filter(p => p._id !== id));
             }
         } catch (error) {
             console.error('Error deleting project:', error);
@@ -84,54 +85,69 @@ export default function AdminProjectsPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-                                {projects.map((project) => (
-                                    <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                {projects.map((project: any) => (
+                                    <tr key={project._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                                         <td className="px-6 py-4">
-                                            <div className="font-medium">{project.title}</div>
-                                            <div className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
-                                                {project.description}
+                                            <div className="flex items-center gap-4">
+                                                {project.images && project.images[0] && (
+                                                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                                                        <img
+                                                            src={project.images[0]}
+                                                            alt={project.title}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                )}
+                                                <div>
+                                                    <div className="font-bold text-gray-900 dark:text-white">{project.title}</div>
+                                                    <div className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1 max-w-xs">
+                                                        {project.description}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400">
+                                            <span className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400">
                                                 {project.category}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex flex-wrap gap-1">
-                                                {project.technologies.slice(0, 2).map((tech, index) => (
+                                                {project.technologies.slice(0, 2).map((tech: string, index: number) => (
                                                     <span
                                                         key={index}
-                                                        className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"
+                                                        className="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-medium"
                                                     >
                                                         {tech}
                                                     </span>
                                                 ))}
                                                 {project.technologies.length > 2 && (
-                                                    <span className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                                                    <span className="text-[10px] px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-medium">
                                                         +{project.technologies.length - 2}
                                                     </span>
                                                 )}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            {project.featured && (
-                                                <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-400">
+                                            {project.featured ? (
+                                                <span className="inline-flex items-center px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400">
                                                     Featured
                                                 </span>
+                                            ) : (
+                                                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Regular</span>
                                             )}
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center justify-end space-x-2">
                                                 <Link
-                                                    href={`/admin/projects/${project.id}/edit`}
-                                                    className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                                    href={`/admin/projects/${project._id}/edit`}
+                                                    className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all"
                                                 >
                                                     <Edit className="w-4 h-4" />
                                                 </Link>
                                                 <button
-                                                    onClick={() => handleDelete(project.id)}
-                                                    className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                                    onClick={() => handleDelete(project._id)}
+                                                    className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
