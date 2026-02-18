@@ -14,9 +14,15 @@ export async function middleware(request: NextRequest) {
         if (request.method === 'OPTIONS') {
             const response = new NextResponse(null, { status: 204 });
             const origin = request.headers.get('origin');
-            if (origin) {
+            const allowedOrigins = [
+                process.env.NEXT_PUBLIC_APP_URL,
+                'https://corenex-innovations.vercel.app',
+                'http://localhost:3000'
+            ];
+
+            if (origin && allowedOrigins.includes(origin)) {
                 response.headers.set('Access-Control-Allow-Origin', origin);
-            } else {
+            } else if (!origin) {
                 response.headers.set('Access-Control-Allow-Origin', '*');
             }
             response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -62,9 +68,15 @@ export async function middleware(request: NextRequest) {
     // Add CORS headers to all API responses
     if (pathname.startsWith('/api')) {
         const origin = request.headers.get('origin');
-        if (origin) {
+        const allowedOrigins = [
+            process.env.NEXT_PUBLIC_APP_URL,
+            'https://corenex-innovations.vercel.app',
+            'http://localhost:3000'
+        ];
+
+        if (origin && allowedOrigins.includes(origin)) {
             response.headers.set('Access-Control-Allow-Origin', origin);
-        } else {
+        } else if (!origin) {
             response.headers.set('Access-Control-Allow-Origin', '*');
         }
         response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');

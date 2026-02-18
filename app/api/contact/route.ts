@@ -10,11 +10,8 @@ export async function POST(request: NextRequest) {
         await dbConnect();
         const body = await request.json();
 
-        // Debug logging to file
-        const fs = require('fs');
-        const path = require('path');
-        const logPath = path.join(process.cwd(), 'debug.log');
-        fs.appendFileSync(logPath, `[${new Date().toISOString()}] Body: ${JSON.stringify(body)}\n`);
+        // Debug logging (standard console is visible in Vercel logs)
+        console.log(`[${new Date().toISOString()}] Body:`, body);
 
         const result = contactSchema.safeParse(body);
 
@@ -46,11 +43,6 @@ export async function POST(request: NextRequest) {
             message: 'Your message has been sent successfully!',
         }, { status: 201 });
     } catch (error: any) {
-        const errorLog = `[${new Date().toISOString()}] Contact API Error: ${JSON.stringify(error.issues || error.message || error)}\nStack: ${error.stack}\n`;
-        const fs = require('fs');
-        const path = require('path');
-        fs.appendFileSync(path.join(process.cwd(), 'api_error.log'), errorLog);
-
         console.error('Contact form error detail:', error);
 
         if (error instanceof z.ZodError) {
