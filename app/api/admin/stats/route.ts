@@ -29,7 +29,31 @@ export async function GET(request: NextRequest) {
             ]),
         ]);
 
-        // Simple monthly message history (last 6 months)
+        // Calculate real trend data for the last 6 months
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const trendData = [];
+
+        for (let i = 5; i >= 0; i--) {
+            const date = new Date();
+            date.setMonth(date.getMonth() - i);
+            const month = date.getMonth();
+            const year = date.getFullYear();
+
+            const startOfMonth = new Date(year, month, 1);
+            const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59, 999);
+
+            const [mCount, pCount] = await Promise.all([
+                ContactMessage.countDocuments({ createdAt: { $gte: startOfMonth, $lte: endOfMonth } }),
+                Project.countDocuments({ createdAt: { $gte: startOfMonth, $lte: endOfMonth } })
+            ]);
+
+            trendData.push({
+                name: monthNames[month],
+                messages: mCount,
+                projects: pCount
+            });
+        }
+
         const categories = projectsByCategory.map(c => ({ name: c._id || 'Uncategorized', value: c.count }));
 
         return NextResponse.json({
@@ -38,14 +62,7 @@ export async function GET(request: NextRequest) {
             unreadMessages,
             totalServices,
             categories,
-            // Sample trend data for charts
-            trendData: [
-                { name: 'Jan', messages: 4, projects: 1 },
-                { name: 'Feb', messages: 7, projects: 2 },
-                { name: 'Mar', messages: 5, projects: 3 },
-                { name: 'Apr', messages: 12, projects: 4 },
-                { name: 'May', messages: totalMessages || 0, projects: totalProjects || 0 },
-            ]
+            trendData
         });
     } catch (error) {
         console.error('Stats error:', error);
