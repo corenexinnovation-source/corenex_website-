@@ -11,7 +11,8 @@ import {
     LogOut,
     Menu,
     X,
-    ChevronRight
+    ChevronRight,
+    Shield
 } from 'lucide-react';
 import { cn } from '@/lib/utils'; // Assuming you have utility for class merging, otherwise I can use template literals
 
@@ -34,6 +35,7 @@ export default function AdminLayout({
         { name: 'Projects', href: '/admin/projects', icon: FolderKanban },
         { name: 'Services', href: '/admin/services', icon: Briefcase },
         { name: 'Messages', href: '/admin/messages', icon: Mail },
+        { name: 'Admins', href: '/admin/admins', icon: Shield },
     ];
 
     return (

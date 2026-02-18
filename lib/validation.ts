@@ -44,6 +44,15 @@ export const serviceSchema = z.object({
 
 export type ServiceInput = z.infer<typeof serviceSchema>;
 
+// Admin creation validation
+export const adminSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters').max(100),
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+export type AdminInput = z.infer<typeof adminSchema>;
+
 // Sanitize HTML to prevent XSS
 export function sanitizeHtml(text: string): string {
     return text
